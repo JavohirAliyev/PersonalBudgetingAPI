@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using PersonalBudgetingApi.Database;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
@@ -10,6 +13,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite("Data Source=app.db"));
+
 
 app.UseHttpsRedirection();
 
