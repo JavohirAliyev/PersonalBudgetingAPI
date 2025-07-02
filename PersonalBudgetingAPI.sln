@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonalBudgetingApi", "PersonalBudgetingApi\PersonalBudgetingApi.csproj", "{082B3F8F-02A5-3F9C-0A17-7340A7851B2B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{082B3F8F-02A5-3F9C-0A17-7340A7851B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{082B3F8F-02A5-3F9C-0A17-7340A7851B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{082B3F8F-02A5-3F9C-0A17-7340A7851B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{082B3F8F-02A5-3F9C-0A17-7340A7851B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {097EA795-8450-4320-944C-140B2FF96C53}
+	EndGlobalSection
+EndGlobal
