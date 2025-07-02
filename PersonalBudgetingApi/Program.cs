@@ -4,6 +4,7 @@ using PersonalBudgetingApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add EF Core with SQLite
 builder.Services.AddDbContext<PersonalBudgetingDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
