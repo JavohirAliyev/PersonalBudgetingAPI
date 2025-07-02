@@ -1,14 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-
+using PersonalBudgetingApi.Interfaces;
+using PersonalBudgetingApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Connection string from appsettings.json
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-// Add DbContext with SQLite
 builder.Services.AddDbContext<PersonalBudgetingDbContext>(options =>
-    options.UseSqlite(connectionString));
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -23,6 +22,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
 app.MapControllers();
+
 app.Run();
