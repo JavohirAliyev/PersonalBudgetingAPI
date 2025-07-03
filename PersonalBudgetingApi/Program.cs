@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-
+using PersonalBudgetingApi.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
