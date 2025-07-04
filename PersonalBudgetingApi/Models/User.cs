@@ -1,5 +1,3 @@
-using System.Diagnostics.Contracts;
-
 namespace PersonalBudgetingApi.Models;
 
 public class User
