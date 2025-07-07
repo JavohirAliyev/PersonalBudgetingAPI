@@ -3,7 +3,7 @@ using PersonalBudgetingApi.Models;
 
 namespace PersonalBudgetingApi.Data;
 
-public class PersonalBudgetingDbContext : DbContext
+public class PersonalBudgetingDbContext(DbContextOptions<PersonalBudgetingDbContext> options) : DbContext(options)
 {
     public PersonalBudgetingDbContext(DbContextOptions<PersonalBudgetingDbContext> options) : base(options) { }
 
@@ -26,8 +26,8 @@ public class PersonalBudgetingDbContext : DbContext
                   .HasMaxLength(100);
 
             entity.Property(u => u.LastName)
-                  .IsRequired()
-                  .HasMaxLength(100);
+            .IsRequired()
+            .HasMaxLength(100);
         });
     }
 }
