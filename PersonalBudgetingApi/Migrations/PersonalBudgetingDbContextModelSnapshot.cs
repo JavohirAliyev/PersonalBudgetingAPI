@@ -55,6 +55,9 @@ namespace PersonalBudgetingApi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<byte[]>("PasswordSalt")
+                        .HasColumnType("BLOB");
+
                     b.Property<string>("PreferredLanguage")
                         .IsRequired()
                         .HasColumnType("TEXT");
