@@ -44,7 +44,7 @@ public class AuthController : ControllerBase
 
             return Ok(new
             {
-                message = "Пользователь успешно зарегистрирован.",
+                message = "user registered succesfully",
                 user = new { user.Id, user.Email }
             });
         }
@@ -60,18 +60,18 @@ public class AuthController : ControllerBase
         var user = await _userService.GetByEmailAsync(dto.Email.Trim().ToLower());
 
         if (user == null)
-            return Unauthorized(new { message = "Неверный email или пароль." });
+            return Unauthorized(new { message = "Invalid email or password" });
 
         var isValid = PasswordHasher.VerifyPassword(dto.Password, user.PasswordSalt!, user.PasswordHash!);
 
         if (!isValid)
-            return Unauthorized(new { message = "Неверный email или пароль." });
+            return Unauthorized(new { message = "Invalid email or password" });
 
         var token = _tokenService.CreateToken(user);
 
         return Ok(new
         {
-            message = "Успешный вход в систему.",
+            message = "logged in successfully",
             token
         });
     }

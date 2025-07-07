@@ -8,7 +8,7 @@ using PersonalBudgetingApi.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "D9F$8eK!z@Qp1rT3mC#vL^b7W*ZxG2uY";
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "JWT-Secret-Key";
 
 builder.Services.AddDbContext<PersonalBudgetingDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
