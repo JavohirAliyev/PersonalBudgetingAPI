@@ -1,6 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using PersonalBudgetingApi.Models;
+
 namespace PersonalBudgetingApi.Data;
 
-public class PersonalBudgetingDbContext(DbContextOptions<PersonalBudgetingDbContext> options) : DbContext(options), DbContext
+public class PersonalBudgetingDbContext(DbContextOptions<PersonalBudgetingDbContext> options) : DbContext(options)
 {
     public DbSet<User> Users { get; set; }
 
@@ -12,12 +15,19 @@ public class PersonalBudgetingDbContext(DbContextOptions<PersonalBudgetingDbCont
         {
             entity.HasIndex(u => u.Email).IsUnique();
             entity.Property(u => u.Email)
-                  .IsRequired()
-                  .HasMaxLength(255);
+                .IsRequired()
+                .HasMaxLength(255);
 
-            entity.Property(u => u.Name)
-                  .IsRequired()
-                  .HasMaxLength(100);
+            entity.Property(u => u.FirstName)
+                .IsRequired()
+                .HasMaxLength(100);
         });
     }
+}
+public class AppDbContext : DbContext
+{
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+    public DbSet<Budget> Budgets { get; set; }
+    public DbSet<User> Users { get; set; }
 }
