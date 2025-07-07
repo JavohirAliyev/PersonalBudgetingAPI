@@ -1,117 +1,97 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using System.Text;
+using System.Security.Claims;
+using PersonalBudgetingApi.Interfaces;
 using PersonalBudgetingApi.Models;
-using PersonalBudgetingApi.Data;
+using PersonalBudgetingApi.Utils;
+using PersonalBudgetingApi.Services;
+
+namespace PersonalBudgetingApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
+    private readonly IUserService _userService;
     private readonly TokenService _tokenService;
-    private readonly PersonalBudgetingDbContext _db;
 
-    public AuthController(TokenService tokenService, PersonalBudgetingDbContext db)
+    public AuthController(IUserService userService, TokenService tokenService)
     {
+        _userService = userService;
         _tokenService = tokenService;
-        _db = db;
     }
 
     [HttpPost("register")]
-    [AllowAnonymous]
-    public async Task<IActionResult> Register([FromBody] RegisterDto dto)
+    public async Task<IActionResult> Register(RegisterDto dto)
     {
-        if (await _db.Users.AnyAsync(u => u.Email == dto.Email))
-            return BadRequest("Email already exists");
-
-        CreatePasswordHash(dto.Password, out string hash, out byte[] salt);
-
-        var user = new User
+        try
         {
-            Id = Guid.NewGuid(),
-            Email = dto.Email,
-            FirstName = dto.FirstName,
-            LastName = dto.LastName,
-            PasswordHash = hash,
-            PasswordSalt = salt,
-            Currency = dto.Currency,
-            PreferredLanguage = dto.PreferredLanguage,
-            Role = "User",
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
-            IsActive = true,
-            IsEmailConfirmed = false
-        };
+            dto.FirstName = dto.FirstName.Trim();
+            dto.LastName = dto.LastName.Trim();
+            dto.Email = dto.Email.Trim().ToLower();
+            dto.Password = dto.Password.Trim();
+            dto.Currency = dto.Currency.Trim().ToUpper();
+            dto.PreferredLanguage = dto.PreferredLanguage.Trim().ToLower();
 
-        _db.Users.Add(user);
-        await _db.SaveChangesAsync();
+            var user = await _userService.RegisterAsync(
+                dto.FirstName,
+                dto.LastName,
+                dto.Email,
+                dto.Password,
+                dto.Currency,
+                dto.PreferredLanguage
+            );
 
-        return Ok("User registered successfully");
+            return Ok(new
+            {
+                message = "Пользователь успешно зарегистрирован.",
+                user = new { user.Id, user.Email }
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpPost("login")]
-    [AllowAnonymous]
-    public async Task<IActionResult> Login([FromBody] LoginDto dto)
+    public async Task<IActionResult> Login(LoginDto dto)
     {
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+        var user = await _userService.GetByEmailAsync(dto.Email.Trim().ToLower());
+
         if (user == null)
-            return Unauthorized("User not found");
+            return Unauthorized(new { message = "Неверный email или пароль." });
 
-        if (user.PasswordSalt == null || !VerifyPassword(dto.Password, user.PasswordHash, user.PasswordSalt))
-            return Unauthorized("Invalid password");
+        var isValid = PasswordHasher.VerifyPassword(dto.Password, user.PasswordSalt!, user.PasswordHash!);
 
-        var token = _tokenService.CreateToken(user.Id.ToString(), user.Email, user.FirstName);
+        if (!isValid)
+            return Unauthorized(new { message = "Неверный email или пароль." });
 
-        return Ok(new { token });
+        var token = _tokenService.CreateToken(user);
+
+        return Ok(new
+        {
+            message = "Успешный вход в систему.",
+            token
+        });
     }
 
-    [HttpGet("profile")]
+    [HttpGet("me")]
     [Authorize]
-    public IActionResult Profile()
+    public IActionResult Me()
     {
-        var name = User.Identity?.Name ?? "unknown";
-        var id = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        var email = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Email)?.Value;
+        var id = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+        var name = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+        var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 
         return Ok(new
         {
             isAuthenticated = true,
-            name,
             id,
             email,
-            claims = User.Claims.Select(c => new { c.Type, c.Value })
+            name,
+            role
         });
     }
-
-    private void CreatePasswordHash(string password, out string hash, out byte[] salt)
-    {
-        using var hmac = new HMACSHA512();
-        salt = hmac.Key;
-        hash = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(password)));
-    }
-
-    private bool VerifyPassword(string password, string hash, byte[] salt)
-    {
-        using var hmac = new HMACSHA512(salt);
-        var computed = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-        return Convert.ToBase64String(computed) == hash;
-    }
-}
-
-public class LoginDto
-{
-    public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-}
-
-public class RegisterDto
-{
-    public string Email { get; set; } = string.Empty;
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-    public string Currency { get; set; } = string.Empty;
-    public string PreferredLanguage { get; set; } = "en";
 }

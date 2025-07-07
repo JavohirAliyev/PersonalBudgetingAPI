@@ -1,17 +1,20 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using PersonalBudgetingApi.Data;
-using System.Security.Claims;
 using System.Text;
+using PersonalBudgetingApi.Data;
+using PersonalBudgetingApi.Services;
+using PersonalBudgetingApi.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "D9F$8eK!z@Qp1rT3mC#vL^b7W*ZxG2uY";
 
 builder.Services.AddDbContext<PersonalBudgetingDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "YOUR_SUPER_SECRET_KEY";
 builder.Services.AddSingleton(new TokenService(jwtKey));
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -21,9 +24,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
             ValidateIssuer = false,
-            ValidateAudience = false,
-            NameClaimType = ClaimTypes.Name,
-            RoleClaimType = ClaimTypes.Role
+            ValidateAudience = false
         };
     });
 
@@ -45,4 +46,3 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
-
