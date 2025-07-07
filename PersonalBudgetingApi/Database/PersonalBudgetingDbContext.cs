@@ -1,6 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using PersonalBudgetingApi.Models;
+
 namespace PersonalBudgetingApi.Data;
 
-public class PersonalBudgetingDbContext(DbContextOptions<PersonalBudgetingDbContext> options) : DbContext(options), DbContext
+public class PersonalBudgetingDbContext(DbContextOptions<PersonalBudgetingDbContext> options) : DbContext(options)
 {
     public DbSet<User> Users { get; set; }
 
@@ -15,9 +18,13 @@ public class PersonalBudgetingDbContext(DbContextOptions<PersonalBudgetingDbCont
                   .IsRequired()
                   .HasMaxLength(255);
 
-            entity.Property(u => u.Name)
+            entity.Property(u => u.FirstName)
                   .IsRequired()
                   .HasMaxLength(100);
+
+            entity.Property(u => u.LastName)
+            .IsRequired()
+            .HasMaxLength(100);
         });
     }
 }
