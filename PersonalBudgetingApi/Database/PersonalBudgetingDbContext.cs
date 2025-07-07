@@ -3,9 +3,10 @@ using PersonalBudgetingApi.Models;
 
 namespace PersonalBudgetingApi.Data;
 
-public class PersonalBudgetingDbContext(DbContextOptions<PersonalBudgetingDbContext> options) : DbContext(options)
+public class PersonalBudgetingDbContext : DbContext
 {
-    public PersonalBudgetingDbContext(DbContextOptions<PersonalBudgetingDbContext> options) : base(options) { }
+    public PersonalBudgetingDbContext(DbContextOptions<PersonalBudgetingDbContext> options)
+        : base(options) { }
 
     public DbSet<User> Users { get; set; }
 
@@ -26,8 +27,8 @@ public class PersonalBudgetingDbContext(DbContextOptions<PersonalBudgetingDbCont
                   .HasMaxLength(100);
 
             entity.Property(u => u.LastName)
-            .IsRequired()
-            .HasMaxLength(100);
+                  .IsRequired()
+                  .HasMaxLength(100);
         });
     }
 }
