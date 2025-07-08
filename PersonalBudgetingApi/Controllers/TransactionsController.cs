@@ -6,14 +6,9 @@ namespace PersonalBudgetingApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TransactionsController : ControllerBase
+public class TransactionsController(ITransactionService transactionService) : ControllerBase
 {
-    private readonly ITransactionService _transactionService;
-
-    public TransactionsController(ITransactionService transactionService)
-    {
-        _transactionService = transactionService;
-    }
+    private readonly ITransactionService _transactionService = transactionService;
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions()
@@ -44,15 +39,11 @@ public class TransactionsController : ControllerBase
     public async Task<IActionResult> UpdateTransaction(int id, Transaction transaction)
     {
         if (id != transaction.Id)
-        {
             return BadRequest();
-        }
 
         var updated = await _transactionService.UpdateAsync(transaction);
         if (!updated)
-        {
             return NotFound();
-        }
 
         return NoContent();
     }
@@ -62,9 +53,7 @@ public class TransactionsController : ControllerBase
     {
         var deleted = await _transactionService.DeleteAsync(id);
         if (!deleted)
-        {
             return NotFound();
-        }
         return NoContent();
     }
 }

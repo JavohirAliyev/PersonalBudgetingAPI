@@ -22,7 +22,7 @@ public class CategoriesController(ICategoryService categoryService) : Controller
     {
         var category = await _categoryService.GetByIdAsync(id);
         if (category == null)
-            return NotFound();
+            return NotFound($"Category with ID {id} was not found.");
         return Ok(category);
     }
 
@@ -41,7 +41,7 @@ public class CategoriesController(ICategoryService categoryService) : Controller
 
         var updated = await _categoryService.UpdateAsync(category);
         if (!updated)
-            return NotFound();
+            return NotFound($"Category with ID {id} was not found and could not be updated.");
 
         return NoContent();
     }
@@ -51,7 +51,7 @@ public class CategoriesController(ICategoryService categoryService) : Controller
     {
         var deleted = await _categoryService.DeleteAsync(id);
         if (!deleted)
-            return NotFound();
+            return NotFound($"Category with ID {id} was not found and could not be deleted.");
 
         return NoContent();
     }

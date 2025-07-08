@@ -1,42 +1,48 @@
+using Microsoft.AspNetCore.Identity;
 using PersonalBudgetingApi.Models;
-using System.Collections.Concurrent;
+using PersonalBudgetingApi.Data;
 
 namespace PersonalBudgetingApi.Services;
 
-public class CategoriesService : ICategoryService
+public class CategoriesService(PersonalBudgetingDbContext context) : ICategoryService
 {
-    private readonly ConcurrentDictionary<int, Category> _categories = new();
-    private int _nextId = 1;
+    private readonly PersonalBudgetingDbContext _context = context;
 
     public Task<IEnumerable<Category>> GetAllAsync()
     {
-        return Task.FromResult(_categories.Values.AsEnumerable());
+        return Task.FromResult(_context.categories.AsEnumerable());
     }
 
-    public Task<Category?> GetByIdAsync(int id)
+    public async Task<Category?> GetByIdAsync(int id)
     {
-        _categories.TryGetValue(id, out var category);
-        return Task.FromResult(category);
+        return await _context.categories.FindAsync(id);
     }
 
     public Task<Category> CreateAsync(Category category)
     {
-        category.Id = _nextId++;
-        _categories[category.Id] = category;
+        _context.categories.Add(category);
+        _context.SaveChanges();
         return Task.FromResult(category);
     }
 
-    public Task<bool> UpdateAsync(Category category)
+    public async Task<bool> UpdateAsync(Category category)
     {
-        if (!_categories.ContainsKey(category.Id))
-            return Task.FromResult(false);
+        var existingCategory = await _context.categories.FindAsync(category.Id);
+        if (existingCategory == null)
+            return false;
 
-        _categories[category.Id] = category;
-        return Task.FromResult(true);
+        _context.Entry(existingCategory).CurrentValues.SetValues(category);
+        await _context.SaveChangesAsync();
+        return true;
     }
-
-    public Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        return Task.FromResult(_categories.TryRemove(id, out _));
+        var category = await _context.categories.FindAsync(id);
+        if (category == null)
+            return false;
+
+        _context.categories.Remove(category);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

@@ -8,6 +8,8 @@ namespace PersonalBudgetingApi.Data
         public PersonalBudgetingDbContext(DbContextOptions<PersonalBudgetingDbContext> options)
             : base(options) { }
 
-        public DbSet<User> Users { get; set; } 
+        public DbSet<User> Users { get; set; }
+        public DbSet<Category> categories { get; set; }
+        public DbSet<Transaction> transactions { get; set; }
     }
 }
