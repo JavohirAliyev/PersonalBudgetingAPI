@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using PersonalBudgetingApi.Interfaces;
 using PersonalBudgetingApi.Models;
 using PersonalBudgetingApi.Utils;
+using PersonalBudgetingApi.Services;
 
 namespace PersonalBudgetingApi.Controllers;
 
@@ -10,10 +13,12 @@ namespace PersonalBudgetingApi.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly TokenService _tokenService;
 
-    public AuthController(IUserService userService)
+    public AuthController(IUserService userService, TokenService tokenService)
     {
         _userService = userService;
+        _tokenService = tokenService;
     }
 
     [HttpPost("register")]
@@ -39,10 +44,9 @@ public class AuthController : ControllerBase
 
             return Ok(new
             {
-                message = "Foydalanuvchi ro'yxatdan o'tkazildi.",
+                message = "user registered succesfully",
                 user = new { user.Id, user.Email }
             });
-
         }
         catch (Exception ex)
         {
@@ -56,23 +60,38 @@ public class AuthController : ControllerBase
         var user = await _userService.GetByEmailAsync(dto.Email.Trim().ToLower());
 
         if (user == null)
-            return Unauthorized(new { message = "Email yoki parol noto‘g‘ri." });
+            return Unauthorized(new { message = "Invalid email or password" });
 
         var isValid = PasswordHasher.VerifyPassword(dto.Password, user.PasswordSalt!, user.PasswordHash!);
 
         if (!isValid)
-            return Unauthorized(new { message = "Email yoki parol noto‘g‘ri." });
+            return Unauthorized(new { message = "Invalid email or password" });
+
+        var token = _tokenService.CreateToken(user);
 
         return Ok(new
         {
-            message = "Tizimga muvaffaqiyatli kirildi.",
-            user = new
-            {
-                user.Id,
-                user.FirstName,
-                user.Email,
-                user.Role
-            }
+            message = "logged in successfully",
+            token
+        });
+    }
+
+    [HttpGet("me")]
+    [Authorize]
+    public IActionResult Me()
+    {
+        var id = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+        var name = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+        var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+        return Ok(new
+        {
+            isAuthenticated = true,
+            id,
+            email,
+            name,
+            role
         });
     }
 }
