@@ -1,3 +1,4 @@
+using PersonalBudgetingApi.DTO;
 using PersonalBudgetingApi.Models;
 
 namespace PersonalBudgetingApi.Services
@@ -7,7 +8,7 @@ namespace PersonalBudgetingApi.Services
         Task<IEnumerable<Transaction>> GetAllAsync();
         Task<Transaction?> GetByIdAsync(int id);
         Task<Transaction> CreateAsync(Transaction transaction);
-        Task<bool> UpdateAsync(Transaction transaction);
+        Task<bool> UpdateAsync(TransactionUpdateDto dto);
         Task<bool> DeleteAsync(int id);
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PersonalBudgetingApi.Models;
 using PersonalBudgetingApi.Services;
+using PersonalBudgetingApi.DTO;
 
 namespace PersonalBudgetingApi.Controllers;
 
@@ -34,12 +35,12 @@ public class CategoriesController(ICategoryService categoryService) : Controller
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCategory(int id, Category category)
+    public async Task<IActionResult> UpdateCategory(int id, CategoryUpdateDto dto)
     {
-        if (id != category.Id)
-            return BadRequest();
+        if (id != dto.Id)
+            return BadRequest("Route ID and DTO ID do not match.");
 
-        var updated = await _categoryService.UpdateAsync(category);
+        var updated = await _categoryService.UpdateAsync(dto);
         if (!updated)
             return NotFound($"Category with ID {id} was not found and could not be updated.");
 

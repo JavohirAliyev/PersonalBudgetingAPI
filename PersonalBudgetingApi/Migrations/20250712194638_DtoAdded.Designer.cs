@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PersonalBudgetingApi.Database;
 
@@ -10,9 +11,11 @@ using PersonalBudgetingApi.Database;
 namespace PersonalBudgetingApi.Migrations
 {
     [DbContext(typeof(PersonalBudgetingDbContext))]
-    partial class PersonalBudgetingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250712194638_DtoAdded")]
+    partial class DtoAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.6");
@@ -119,10 +122,6 @@ namespace PersonalBudgetingApi.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PasswordSalt")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

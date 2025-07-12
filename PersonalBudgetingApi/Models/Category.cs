@@ -8,5 +8,5 @@ public class Category
     public int UserId { get; set; }
     public User? User { get; set; }
     public int TransactionId { get; set; }
-    public Transaction? Transaction { get; set; }
+    public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }

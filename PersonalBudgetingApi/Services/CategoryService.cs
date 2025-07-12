@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using PersonalBudgetingApi.Models;
+using PersonalBudgetingApi.DTO;
 using PersonalBudgetingApi.Database;
 
 namespace PersonalBudgetingApi.Services;
@@ -25,16 +26,19 @@ public class CategoriesService(PersonalBudgetingDbContext context) : ICategorySe
         return Task.FromResult(category);
     }
 
-    public async Task<bool> UpdateAsync(Category category)
+    public async Task<bool> UpdateAsync(CategoryUpdateDto dto)
     {
-        var existingCategory = await _context.categories.FindAsync(category.Id);
-        if (existingCategory == null)
+        var category = await _context.categories.FindAsync(dto.Id);
+        if (category == null)
             return false;
 
-        _context.Entry(existingCategory).CurrentValues.SetValues(category);
+        category.Name = dto.Name;
+        category.Type = dto.Type;
+
         await _context.SaveChangesAsync();
         return true;
     }
+
     public async Task<bool> DeleteAsync(int id)
     {
         var category = await _context.categories.FindAsync(id);

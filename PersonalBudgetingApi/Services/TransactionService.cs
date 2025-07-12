@@ -1,54 +1,62 @@
 using PersonalBudgetingApi.Models;
-using PersonalBudgetingApi.Data;
+using PersonalBudgetingApi.Database;
+using PersonalBudgetingApi.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace PersonalBudgetingApi.Services
 {
-    public class TransactionService(PersonalBudgetingDbContext context) : ITransactionService
+    public class Transactionservice(PersonalBudgetingDbContext context) : ITransactionService
     {
         private readonly PersonalBudgetingDbContext _context = context;
 
         public Task<IEnumerable<Transaction>> GetAllAsync()
         {
-            return Task.FromResult(_context.transactions.AsEnumerable());
+            return Task.FromResult(_context.Transactions.AsEnumerable());
         }
 
         public Task<Transaction?> GetByIdAsync(int id)
         {
-            var transaction = _context.transactions.FirstOrDefault(t => t.Id == id);
+            var transaction = _context.Transactions.FirstOrDefault(t => t.Id == id);
             return Task.FromResult(transaction);
         }
 
         public Task<Transaction> CreateAsync(Transaction transaction)
         {
-            _context.transactions.Add(transaction);
+            _context.Transactions.Add(transaction);
             return Task.FromResult(transaction);
         }
 
-        public Task<bool> UpdateAsync(Transaction transaction)
+        public async Task<bool> UpdateAsync(TransactionUpdateDto dto)
         {
-            var existing = _context.transactions.FirstOrDefault(t => t.Id == transaction.Id);
-            if (existing == null)
-            {
-                return Task.FromResult(false);
-            }
+            var transaction = await _context.Transactions
+                .Include(t => t.Category)
+                .FirstOrDefaultAsync(t => t.Id == dto.Id);
 
-            existing.Amount = transaction.Amount;
-            existing.Description = transaction.Description;
-            existing.Date = transaction.Date;
-            existing.Category = transaction.Category;
+            if (transaction == null)
+                return false;
 
-            return Task.FromResult(true);
+            transaction.Amount = dto.Amount;
+            transaction.Description = dto.Description;
+            transaction.Date = dto.Date;
+
+            var category = await _context.Categories.FindAsync(dto.CategoryId);
+            if (category == null)
+                return false;
+
+            transaction.Category = category;
+
+            return true;
         }
 
         public Task<bool> DeleteAsync(int id)
         {
-            var transaction = _context.transactions.FirstOrDefault(t => t.Id == id);
+            var transaction = _context.Transactions.FirstOrDefault(t => t.Id == id);
             if (transaction == null)
             {
                 return Task.FromResult(false);
             }
 
-            _context.transactions.Remove(transaction);
+            _context.Transactions.Remove(transaction);
             return Task.FromResult(true);
         }
     }
