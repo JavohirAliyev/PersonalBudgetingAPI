@@ -3,8 +3,13 @@ using PersonalBudgetingApi.Models;
 
 namespace PersonalBudgetingApi.Data;
 
-public class PersonalBudgetingDbContext(DbContextOptions<PersonalBudgetingDbContext> options) : DbContext
+public class PersonalBudgetingDbContext : DbContext
 {
+    public PersonalBudgetingDbContext(DbContextOptions<PersonalBudgetingDbContext> options)
+        : base(options)
+    {
+    }
+
     public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

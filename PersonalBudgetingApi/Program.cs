@@ -13,7 +13,7 @@ var jwtKey = builder.Configuration["Jwt:Key"] ?? "JWT-Secret-Key";
 builder.Services.AddDbContext<PersonalBudgetingDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddSingleton(new TokenService(jwtKey));
+builder.Services.AddSingleton<ITokenService>(new TokenService(jwtKey));
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

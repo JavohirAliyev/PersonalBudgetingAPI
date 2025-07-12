@@ -13,13 +13,26 @@ namespace PersonalBudgetingApi.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IUserService _userService;
-    private readonly TokenService _tokenService;
+    private readonly ITokenService _tokenService;
 
-    public AuthController(IUserService userService, TokenService tokenService)
+    public AuthController(IUserService userService, ITokenService tokenService)
     {
         _userService = userService;
         _tokenService = tokenService;
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var users = await _userService.GetAllUsersAsync();
+        return Ok(users.Select(u => new
+        {
+            u.Id,
+            u.FirstName,
+            u.LastName,
+            u.Email,
+        }));
+    }  
 
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDto dto)
@@ -83,7 +96,7 @@ public class AuthController : ControllerBase
         var id = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
         var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
         var name = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-        var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+        var surname = User.Claims.FirstOrDefault(c => c.Type == "surname")?.Value;
 
         return Ok(new
         {
@@ -91,7 +104,7 @@ public class AuthController : ControllerBase
             id,
             email,
             name,
-            role
+            surname
         });
     }
 }

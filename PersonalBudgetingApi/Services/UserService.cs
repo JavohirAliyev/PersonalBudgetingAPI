@@ -15,6 +15,11 @@ public class UserService : IUserService
         _context = context;
     }
 
+    public async Task<List<User>> GetAllUsersAsync()
+    {
+        return await _context.Users.ToListAsync();
+    }
+
     public async Task<bool> EmailExistsAsync(string email)
     {
         return await _context.Users.AnyAsync(u => u.Email == email);
@@ -35,7 +40,6 @@ public class UserService : IUserService
 
         var user = new User
         {
-            Id = Guid.NewGuid(),
             FirstName = firstName,
             LastName = lastName,
             Email = email,
@@ -55,6 +59,4 @@ public class UserService : IUserService
 
         return user;
     }
-
-    
 }

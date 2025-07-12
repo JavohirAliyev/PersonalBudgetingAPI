@@ -2,12 +2,13 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using PersonalBudgetingApi.Interfaces;
 
 using PersonalBudgetingApi.Models;
 
 namespace PersonalBudgetingApi.Services;
 
-public class TokenService
+public class TokenService : ITokenService
 {
     private readonly string _jwtKey;
 
@@ -23,6 +24,7 @@ public class TokenService
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.Name, user.FirstName),
+            new Claim("surname", user.LastName),
             new Claim(ClaimTypes.Role, user.Role)
         };
 
