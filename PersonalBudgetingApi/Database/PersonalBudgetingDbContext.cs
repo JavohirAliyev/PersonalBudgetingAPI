@@ -6,6 +6,8 @@ namespace PersonalBudgetingApi.Data;
 public class PersonalBudgetingDbContext(DbContextOptions<PersonalBudgetingDbContext> options) : DbContext(options)
 {
     public DbSet<User> Users { get; set; }
+    public DbSet<Category> categories { get; set; }
+    public DbSet<Transaction> transactions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

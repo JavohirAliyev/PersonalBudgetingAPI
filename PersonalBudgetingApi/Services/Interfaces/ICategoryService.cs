@@ -1,0 +1,13 @@
+using PersonalBudgetingApi.DTO;
+using PersonalBudgetingApi.Models;
+
+namespace PersonalBudgetingApi.Services;
+
+public interface ICategoryService
+{
+    Task<IEnumerable<Category>> GetAllAsync();
+    Task<Category?> GetByIdAsync(int id);
+    Task<Category> CreateAsync(Category category);
+    Task<bool> UpdateAsync(CategoryUpdateDto dto);
+    Task<bool> DeleteAsync(int id);
+}
