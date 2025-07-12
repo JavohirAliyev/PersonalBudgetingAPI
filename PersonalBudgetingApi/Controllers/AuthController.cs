@@ -39,7 +39,8 @@ public class AuthController : ControllerBase
                 dto.Email,
                 dto.Password,
                 dto.Currency,
-                dto.PreferredLanguage
+                dto.PreferredLanguage,
+                dto.DateOfBirth 
             );
 
             return Ok(new
