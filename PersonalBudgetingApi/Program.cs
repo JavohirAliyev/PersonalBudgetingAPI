@@ -33,18 +33,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuer = false,
             ValidateAudience = false
         };
-        options.Events = new JwtBearerEvents
-        {
-            OnAuthenticationFailed = context =>
-            {
-                Console.WriteLine("Authentication failed: " + context.Exception.Message);
-                if (context.Request.Headers.TryGetValue("Authorization", out var authHeader))
-                {
-                    Console.WriteLine("JWT Token: " + authHeader);
-                }
-                return Task.CompletedTask;
-            }
-        };
     });
 builder.Services.AddAuthorization();
 
