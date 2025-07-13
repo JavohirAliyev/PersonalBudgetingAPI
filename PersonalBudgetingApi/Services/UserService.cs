@@ -25,7 +25,7 @@ public class UserService : IUserService
         return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
 
-    public async Task<User> RegisterAsync(string firstName, string lastName, string email, string password, string currency, string language, DateTime DateOfBirth)
+    public async Task<User> RegisterAsync(string firstName, string lastName, string email, string password, string currency, string language, DateTime dateOfBirth)
     {
         if (await EmailExistsAsync(email))
             throw new Exception("Ushbu email allaqachon ro'yxatdan o'tgan.");

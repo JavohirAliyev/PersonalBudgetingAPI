@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PersonalBudgetingApi.Services
 {
-    public class Transactionservice(PersonalBudgetingDbContext context) : ITransactionService
+    public class TransactionService(PersonalBudgetingDbContext context) : ITransactionService
     {
         private readonly PersonalBudgetingDbContext _context = context;
 

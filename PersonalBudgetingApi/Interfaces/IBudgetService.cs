@@ -1,3 +1,4 @@
+using PersonalBudgetingApi.DTO;
 using PersonalBudgetingApi.Models;
 
 namespace PersonalBudgetingApi.Interfaces;

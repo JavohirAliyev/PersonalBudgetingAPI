@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PersonalBudgetingApi.DTO;
 using PersonalBudgetingApi.Interfaces;
 using PersonalBudgetingApi.Models;
 using System.Security.Claims;
