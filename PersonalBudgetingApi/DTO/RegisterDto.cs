@@ -1,4 +1,4 @@
-namespace PersonalBudgetingApi.Models;
+namespace PersonalBudgetingApi.DTO;
 
 public class RegisterDto
 {

@@ -10,7 +10,7 @@ public class User
     public string? Currency { get; set; }
     public string? PreferredLanguage { get; set; }
     public bool IsEmailConfirmed { get; set; }
-    public string? Role { get; set; }
+    public string Role { get; set; } = "user";
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public bool IsActive { get; set; }

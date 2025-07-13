@@ -1,4 +1,5 @@
-namespace PersonalBudgetingApi.Models;
+namespace PersonalBudgetingApi.DTO;
+
 public class BudgetDto
 {
     public int Id { get; set; }

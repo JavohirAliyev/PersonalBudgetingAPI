@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Identity;
 using PersonalBudgetingApi.Models;
 using PersonalBudgetingApi.Database;
+using PersonalBudgetingApi.DTO;
 
 namespace PersonalBudgetingApi.Services;
 
@@ -10,24 +10,24 @@ public class CategoriesService(PersonalBudgetingDbContext context) : ICategorySe
 
     public Task<IEnumerable<Category>> GetAllAsync()
     {
-        return Task.FromResult(_context.categories.AsEnumerable());
+        return Task.FromResult(_context.Categories.AsEnumerable());
     }
 
     public async Task<Category?> GetByIdAsync(int id)
     {
-        return await _context.categories.FindAsync(id);
+        return await _context.Categories.FindAsync(id);
     }
 
     public Task<Category> CreateAsync(Category category)
     {
-        _context.categories.Add(category);
+        _context.Categories.Add(category);
         _context.SaveChanges();
         return Task.FromResult(category);
     }
 
-    public async Task<bool> UpdateAsync(Category category)
+    public async Task<bool> UpdateAsync(CategoryUpdateDto category)
     {
-        var existingCategory = await _context.categories.FindAsync(category.Id);
+        var existingCategory = await _context.Categories.FindAsync(category.Id);
         if (existingCategory == null)
             return false;
 
@@ -37,11 +37,11 @@ public class CategoriesService(PersonalBudgetingDbContext context) : ICategorySe
     }
     public async Task<bool> DeleteAsync(int id)
     {
-        var category = await _context.categories.FindAsync(id);
+        var category = await _context.Categories.FindAsync(id);
         if (category == null)
             return false;
 
-        _context.categories.Remove(category);
+        _context.Categories.Remove(category);
         await _context.SaveChangesAsync();
         return true;
     }

@@ -1,18 +1,14 @@
 using PersonalBudgetingApi.Models;
 using PersonalBudgetingApi.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using PersonalBudgetingApi.Data;
+using PersonalBudgetingApi.Database;
+using PersonalBudgetingApi.DTO;
 
 namespace PersonalBudgetingApi.Services;
 
-public class BudgetService : IBudgetService
+public class BudgetService(PersonalBudgetingDbContext context) : IBudgetService
 {
-    private readonly AppDbContext _context;
-
-    public BudgetService(AppDbContext context)
-    {
-        _context = context;
-    }
+    private readonly PersonalBudgetingDbContext _context = context;
 
     public async Task<BudgetDto?> CreateBudgetAsync(BudgetCreateDto dto, int userId)
     {
