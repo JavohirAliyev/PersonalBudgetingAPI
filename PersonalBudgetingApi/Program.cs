@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using PersonalBudgetingApi.Database;
 using PersonalBudgetingApi.Services;
 using PersonalBudgetingApi.Interfaces;
 using Microsoft.OpenApi.Models;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,10 +29,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                .GetBytes("D9F$8eK!z@Qp1rT3mC#vL^b7W*ZxG2uY")),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
             ValidateIssuer = false,
             ValidateAudience = false
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine("Authentication failed: " + context.Exception.Message);
+                if (context.Request.Headers.TryGetValue("Authorization", out var authHeader))
+                {
+                    Console.WriteLine("JWT Token: " + authHeader);
+                }
+                return Task.CompletedTask;
+            }
         };
     });
 builder.Services.AddAuthorization();
@@ -66,8 +77,6 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
-app.UseAuthentication();
-app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
@@ -75,7 +84,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+// app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();

@@ -13,17 +13,20 @@ public class TokenService(string jwtKey)
     public string CreateToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes("D9F$8eK!z@Qp1rT3mC#vL^b7W*ZxG2uY");
+        var key = Encoding.ASCII.GetBytes(_jwtKey);
+
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.Name, user.FirstName),
+            new(ClaimTypes.Role, user.Role),
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString())
+        };
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(
-            [
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.FirstName),
-                new Claim(ClaimTypes.Role, user.Role)
-            ]),
+            Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddDays(7),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
