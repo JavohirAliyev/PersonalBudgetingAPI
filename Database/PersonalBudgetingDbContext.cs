@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using PersonalBudgetingApi.Models;
-
 namespace PersonalBudgetingApi.Data
 {
     public class PersonalBudgetingDbContext : DbContext
@@ -9,7 +6,7 @@ namespace PersonalBudgetingApi.Data
             : base(options) { }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<Category> categories { get; set; }
-        public DbSet<Transaction> transactions { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
     }
 }
