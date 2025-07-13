@@ -11,8 +11,8 @@ using PersonalBudgetingApi.Data;
 namespace PersonalBudgetingApi.Migrations
 {
     [DbContext(typeof(PersonalBudgetingDbContext))]
-    [Migration("20250703054427_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20250707043309_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,10 +38,12 @@ namespace PersonalBudgetingApi.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
@@ -52,9 +54,14 @@ namespace PersonalBudgetingApi.Migrations
 
                     b.Property<string>("LastName")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordSalt")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -70,6 +77,9 @@ namespace PersonalBudgetingApi.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
