@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PersonalBudgetingApi.Database;
 
@@ -10,9 +11,11 @@ using PersonalBudgetingApi.Database;
 namespace PersonalBudgetingApi.Migrations
 {
     [DbContext(typeof(PersonalBudgetingDbContext))]
-    partial class PersonalBudgetingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250713174219_MigrationsReset")]
+    partial class MigrationsReset
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.6");
@@ -36,8 +39,10 @@ namespace PersonalBudgetingApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId", "Name")
+                    b.HasIndex("Name")
                         .IsUnique();
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Budgets");
                 });
@@ -53,6 +58,9 @@ namespace PersonalBudgetingApi.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("TransactionId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Type")
                         .HasColumnType("TEXT");
 
@@ -61,8 +69,10 @@ namespace PersonalBudgetingApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId", "Name")
+                    b.HasIndex("Name")
                         .IsUnique();
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Categories");
                 });
@@ -75,6 +85,9 @@ namespace PersonalBudgetingApi.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("BudgetId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("INTEGER");
@@ -91,7 +104,11 @@ namespace PersonalBudgetingApi.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BudgetId");
+
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("Date");
 
                     b.HasIndex("UserId");
 
@@ -184,17 +201,25 @@ namespace PersonalBudgetingApi.Migrations
 
             modelBuilder.Entity("PersonalBudgetingApi.Models.Transaction", b =>
                 {
+                    b.HasOne("PersonalBudgetingApi.Models.Budget", "Budget")
+                        .WithMany()
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("PersonalBudgetingApi.Models.Category", "Category")
                         .WithMany("Transactions")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PersonalBudgetingApi.Models.User", "User")
                         .WithMany("Transactions")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Budget");
 
                     b.Navigation("Category");
 

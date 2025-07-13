@@ -20,17 +20,28 @@ namespace PersonalBudgetingApi.Services
             return Task.FromResult(transaction);
         }
 
-        public Task<Transaction> CreateAsync(Transaction transaction)
+        public async Task<Transaction> CreateAsync(TransactionDto dto)
         {
-            _context.Transactions.Add(transaction);
-            return Task.FromResult(transaction);
+            var transaction = new Transaction
+            {
+                Amount = dto.Amount,
+                Description = dto.Description,
+                Date = dto.Date,
+                CategoryId = dto.CategoryId,
+                UserId = dto.UserId
+            };
+
+            await _context.Transactions.AddAsync(transaction);
+            await _context.SaveChangesAsync();
+
+            return transaction;
         }
 
-        public async Task<bool> UpdateAsync(TransactionUpdateDto dto)
+        public async Task<bool> UpdateAsync(int id, TransactionDto dto)
         {
             var transaction = await _context.Transactions
                 .Include(t => t.Category)
-                .FirstOrDefaultAsync(t => t.Id == dto.Id);
+                .FirstOrDefaultAsync(t => t.Id == id);
 
             if (transaction == null)
                 return false;

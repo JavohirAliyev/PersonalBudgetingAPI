@@ -35,7 +35,6 @@ public class UserService : IUserService
 
         var user = new User
         {
-            Id = Guid.NewGuid(),
             FirstName = firstName,
             LastName = lastName,
             Email = email,
