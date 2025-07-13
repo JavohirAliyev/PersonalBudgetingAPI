@@ -19,8 +19,8 @@ public class PersonalBudgetingDbContext : DbContext
             entity.HasIndex(u => u.Email).IsUnique();
 
             entity.Property(u => u.Email)
-                  .IsRequired()
-                  .HasMaxLength(255);
+                .IsRequired()
+                .HasMaxLength(255);
 
             entity.Property(u => u.FirstName)
                   .IsRequired()
@@ -31,4 +31,11 @@ public class PersonalBudgetingDbContext : DbContext
                   .HasMaxLength(100);
         });
     }
+}
+public class AppDbContext : DbContext
+{
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+    public DbSet<Budget> Budgets { get; set; }
+    public DbSet<User> Users { get; set; }
 }
