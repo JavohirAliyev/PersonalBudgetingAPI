@@ -4,7 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using PersonalBudgetingApi.Data;
 using PersonalBudgetingApi.Services;
-using PersonalBudgetingApi.Interfaces;
+using PersonalBudgetingApi.Interfaces;using PersonalBudgetingApi.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ var jwtKey = builder.Configuration["Jwt:Key"] ?? "JWT-Secret-Key";
 builder.Services.AddDbContext<PersonalBudgetingDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<ICategoryService, CategoriesService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddSingleton(new TokenService(jwtKey));
 builder.Services.AddScoped<IUserService, UserService>();
 
@@ -29,7 +32,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
-builder.Services.AddControllers();
+builder.Services.AddControllers();builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -45,4 +49,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapControllers();
+
 app.Run();

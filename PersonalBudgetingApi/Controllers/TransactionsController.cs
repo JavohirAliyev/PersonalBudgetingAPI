@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PersonalBudgetingApi.Models;
 using PersonalBudgetingApi.Services;
+using PersonalBudgetingApi.DTO;
 
 namespace PersonalBudgetingApi.Controllers;
 
@@ -36,14 +37,14 @@ public class TransactionsController(ITransactionService transactionService) : Co
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateTransaction(int id, Transaction transaction)
+    public async Task<IActionResult> UpdateTransaction(int id, TransactionUpdateDto dto)
     {
-        if (id != transaction.Id)
-            return BadRequest();
+        if (id != dto.Id)
+            return BadRequest("Route ID does not match body ID.");
 
-        var updated = await _transactionService.UpdateAsync(transaction);
+        var updated = await _transactionService.UpdateAsync(dto);
         if (!updated)
-            return NotFound();
+            return NotFound($"Transaction with ID {id} was not found.");
 
         return NoContent();
     }

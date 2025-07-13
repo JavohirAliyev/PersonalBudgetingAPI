@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using PersonalBudgetingApi.Data;
 using PersonalBudgetingApi.Models;
 using PersonalBudgetingApi.Utils;
 using PersonalBudgetingApi.Interfaces;
+using PersonalBudgetingApi.Database;
 
 namespace PersonalBudgetingApi.Services;
 
