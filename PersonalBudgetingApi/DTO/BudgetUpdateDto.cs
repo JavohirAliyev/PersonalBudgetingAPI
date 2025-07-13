@@ -1,4 +1,5 @@
-namespace PersonalBudgetingApi.Models;
+namespace PersonalBudgetingApi.DTO;
+
 public class BudgetUpdateDto
 {
     public string Name { get; set; } = string.Empty;

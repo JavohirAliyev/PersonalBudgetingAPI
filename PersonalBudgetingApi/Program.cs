@@ -20,6 +20,7 @@ builder.Services.AddDbContext<PersonalBudgetingDbContext>(options =>
 
 builder.Services.AddScoped<ICategoryService, CategoriesService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IBudgetService, BudgetService>();
 builder.Services.AddSingleton(new TokenService(jwtKey));
 builder.Services.AddScoped<IUserService, UserService>();
 

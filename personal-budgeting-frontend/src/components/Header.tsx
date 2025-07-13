@@ -13,7 +13,7 @@ export default function Header() {
     };
 
     return (
-        <header className="bg-indigo-300 shadow flex items-center justify-between px-6 py-4 mb-8">
+        <header className="bg-indigo-100 shadow flex items-center justify-between px-6 py-4 mb-8">
             <div className="flex items-center gap-6">
                 <Link to="/" className="text-2xl font-bold text-blue-600">BudgetApp</Link>
                 {isLoggedIn && (
@@ -26,8 +26,8 @@ export default function Header() {
             <div className="flex items-center gap-4">
                 {isLoggedIn ? (
                     <>
-                        <span className="text-gray-700 font-medium">{auth.user?.firstName} {auth.user?.lastName}</span>
-                        <button onClick={handleLogout} className="bg-red-100 text-red-600 px-3 py-1 rounded hover:bg-red-200 transition">Logout</button>
+                        <span className="text-gray-700 font-medium">{auth.user?.given_name} {auth.user?.family_name}</span>
+                        <button onClick={handleLogout} className="bg-indigo-100 text-red-600 px-3 py-1 rounded hover:bg-red-200 transition">Logout</button>
                     </>
                 ) : (
                     <Link to="/login" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">Login</Link>

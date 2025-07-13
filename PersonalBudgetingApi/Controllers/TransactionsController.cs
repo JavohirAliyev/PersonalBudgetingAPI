@@ -30,19 +30,17 @@ public class TransactionsController(ITransactionService transactionService) : Co
     }
 
     [HttpPost]
-    public async Task<ActionResult<Transaction>> CreateTransaction(Transaction transaction)
+    public async Task<ActionResult<Transaction>> CreateTransaction(TransactionDto transaction)
     {
         var created = await _transactionService.CreateAsync(transaction);
         return CreatedAtAction(nameof(GetTransaction), new { id = created.Id }, created);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateTransaction(int id, TransactionUpdateDto dto)
+    public async Task<IActionResult> UpdateTransaction(int id, TransactionDto dto)
     {
-        if (id != dto.Id)
-            return BadRequest("Route ID does not match body ID.");
+        var updated = await _transactionService.UpdateAsync(id, dto);
 
-        var updated = await _transactionService.UpdateAsync(dto);
         if (!updated)
             return NotFound($"Transaction with ID {id} was not found.");
 
