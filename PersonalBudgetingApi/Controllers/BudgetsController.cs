@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalBudgetingApi.DTO;
-using PersonalBudgetingApi.Interfaces;
-using PersonalBudgetingApi.Models;
+using PersonalBudgetingApi.Services.Interfaces;
 using System.Security.Claims;
 
 [ApiController]
@@ -21,7 +20,7 @@ public class BudgetsController : ControllerBase
         int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
 
     [HttpPost]
-    public async Task<IActionResult> Create(BudgetCreateDto dto)
+    public async Task<IActionResult> Create(BudgetDto dto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -44,7 +43,7 @@ public class BudgetsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, BudgetUpdateDto dto)
+    public async Task<IActionResult> Update(int id, BudgetDto dto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 

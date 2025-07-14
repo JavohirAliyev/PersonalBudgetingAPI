@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using PersonalBudgetingApi.Database;
 using PersonalBudgetingApi.Services;
-using PersonalBudgetingApi.Interfaces;
+using PersonalBudgetingApi.Services.Interfaces;
 using Microsoft.OpenApi.Models;
+using Microsoft.IdentityModel.Tokens;
+using PersonalBudgetingApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,8 +21,19 @@ builder.Services.AddDbContext<PersonalBudgetingDbContext>(options =>
 
 builder.Services.AddScoped<ICategoryService, CategoriesService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
-builder.Services.AddSingleton(new TokenService(jwtKey));
+builder.Services.AddScoped<IBudgetService, BudgetService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton(new TokenService(jwtKey));
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost3000", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -29,32 +41,34 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                .GetBytes("D9F$8eK!z@Qp1rT3mC#vL^b7W*ZxG2uY")),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
             ValidateIssuer = false,
             ValidateAudience = false
         };
     });
+
 builder.Services.AddAuthorization();
-
 builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+if (builder.Environment.IsDevelopment())
 {
-    c.SwaggerDoc("v1", new() { Title = "Personal Budgeting API", Version = "v1" });
-
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    builder.Services.AddSwaggerGen(c =>
     {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Enter your JWT token below. Example: eyJhbGciOiJIUzI1NiIsInR5cCI6..."
-    });
+        c.SwaggerDoc("v1", new() { Title = "Personal Budgeting API", Version = "v1" });
 
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "Enter your JWT token below. Example: eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+        });
+
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
         {
             new OpenApiSecurityScheme
             {
@@ -62,12 +76,11 @@ builder.Services.AddSwaggerGen(c =>
             },
             Array.Empty<string>()
         }
+        });
     });
-});
+}
 
 var app = builder.Build();
-app.UseAuthentication();
-app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
@@ -76,6 +89,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseExceptionHandling();
+
+app.UseRouting();
+app.UseCors("AllowLocalhost3000");
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

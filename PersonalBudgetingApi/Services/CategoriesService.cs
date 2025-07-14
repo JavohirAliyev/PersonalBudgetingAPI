@@ -1,6 +1,7 @@
 using PersonalBudgetingApi.Models;
 using PersonalBudgetingApi.Database;
 using PersonalBudgetingApi.DTO;
+using PersonalBudgetingApi.Services.Interfaces;
 
 namespace PersonalBudgetingApi.Services;
 
@@ -25,9 +26,9 @@ public class CategoriesService(PersonalBudgetingDbContext context) : ICategorySe
         return Task.FromResult(category);
     }
 
-    public async Task<bool> UpdateAsync(CategoryUpdateDto category)
+    public async Task<bool> UpdateAsync(int id, CategoryDto category)
     {
-        var existingCategory = await _context.Categories.FindAsync(category.Id);
+        var existingCategory = await _context.Categories.FindAsync(id);
         if (existingCategory == null)
             return false;
 

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using PersonalBudgetingApi.Interfaces;
+using PersonalBudgetingApi.Services.Interfaces;
 using PersonalBudgetingApi.Utils;
 using PersonalBudgetingApi.Services;
 using PersonalBudgetingApi.DTO;

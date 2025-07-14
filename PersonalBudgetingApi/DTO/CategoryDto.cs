@@ -1,7 +1,7 @@
 namespace PersonalBudgetingApi.DTO;
 
-public class BudgetDto
+public class CategoryDto
 {
     public required string Name { get; set; }
-    public decimal Limit { get; set; }
+    public required string Type { get; set; }
 }
