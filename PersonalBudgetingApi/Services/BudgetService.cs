@@ -10,7 +10,7 @@ public class BudgetService(PersonalBudgetingDbContext context) : IBudgetService
 {
     private readonly PersonalBudgetingDbContext _context = context;
 
-    public async Task<BudgetDto?> CreateBudgetAsync(BudgetDto dto, int userId)
+    public async Task<Budget> CreateBudgetAsync(BudgetDto dto, int userId)
     {
         var budget = new Budget
         {
@@ -19,15 +19,10 @@ public class BudgetService(PersonalBudgetingDbContext context) : IBudgetService
             UserId = userId
         };
 
-        _context.Budgets.Add(budget);
+        var created = await _context.Budgets.AddAsync(budget);
         await _context.SaveChangesAsync();
 
-        return new BudgetDto
-        {
-            Id = budget.Id,
-            Name = budget.Name,
-            Limit = budget.Limit
-        };
+        return created.Entity;
     }
 
     public async Task<List<BudgetDto>> GetBudgetsAsync(int userId)
@@ -36,7 +31,6 @@ public class BudgetService(PersonalBudgetingDbContext context) : IBudgetService
             .Where(b => b.UserId == userId)
             .Select(b => new BudgetDto
             {
-                Id = b.Id,
                 Name = b.Name!,
                 Limit = b.Limit
             })
@@ -49,7 +43,6 @@ public class BudgetService(PersonalBudgetingDbContext context) : IBudgetService
             .Where(b => b.Id == id && b.UserId == userId)
             .Select(b => new BudgetDto
             {
-                Id = b.Id,
                 Name = b.Name!,
                 Limit = b.Limit
             })
