@@ -1,7 +1,7 @@
 using PersonalBudgetingApi.DTO;
 using PersonalBudgetingApi.Models;
 
-namespace PersonalBudgetingApi.Services
+namespace PersonalBudgetingApi.Services.Interfaces
 {
     public interface ITransactionService
     {

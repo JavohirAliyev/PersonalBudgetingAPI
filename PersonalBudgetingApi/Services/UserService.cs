@@ -1,19 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using PersonalBudgetingApi.Models;
 using PersonalBudgetingApi.Utils;
-using PersonalBudgetingApi.Interfaces;
+using PersonalBudgetingApi.Services.Interfaces;
 using PersonalBudgetingApi.Database;
 
 namespace PersonalBudgetingApi.Services;
 
-public class UserService : IUserService
+public class UserService(PersonalBudgetingDbContext context) : IUserService
 {
-    private readonly PersonalBudgetingDbContext _context;
-
-    public UserService(PersonalBudgetingDbContext context)
-    {
-        _context = context;
-    }
+    private readonly PersonalBudgetingDbContext _context = context;
 
     public async Task<bool> EmailExistsAsync(string email)
     {
@@ -28,7 +23,9 @@ public class UserService : IUserService
     public async Task<User> RegisterAsync(string firstName, string lastName, string email, string password, string currency, string language, DateTime dateOfBirth)
     {
         if (await EmailExistsAsync(email))
+        {
             throw new Exception("Ushbu email allaqachon ro'yxatdan o'tgan.");
+        }
 
         var salt = PasswordHasher.GenerateSalt();
         var hashedPassword = PasswordHasher.HashPassword(password, salt);
