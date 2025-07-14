@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PersonalBudgetingApi.Models;
-using PersonalBudgetingApi.Services;
+using PersonalBudgetingApi.Services.Interfaces;
 using PersonalBudgetingApi.DTO;
 
 namespace PersonalBudgetingApi.Controllers;

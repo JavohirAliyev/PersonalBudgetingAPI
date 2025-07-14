@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import http from '../api/http';
 
-const mockData = {
-    balance: 3200,
-    income: 4500,
-    expenses: 1300
-};
-
 interface Transaction {
     id: number;
     description: string;
@@ -32,6 +26,9 @@ interface Category {
 const Dashboard: React.FC = () => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [showForm, setShowForm] = useState(false);
+    const [balance, setBalance] = useState(0);
+    const [income, setIncome] = useState(0);
+    const [expenses, setExpences] = useState(0);
     const [newTransaction, setNewTransaction] = useState({
         description: '',
         amount: '',
@@ -41,8 +38,11 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         http.get('/transactions/').then(response => {
             setTransactions(response.data);
-        })
-    }, []);
+        });
+        setBalance(transactions.reduce((acc, tx) => acc + tx.amount, 0));
+        setIncome(transactions.filter(tx => tx.amount > 0).reduce((acc, tx) => acc + tx.amount, 0));
+        setExpences(Math.abs(transactions.filter(tx => tx.amount < 0).reduce((acc, tx) => acc + tx.amount, 0)));
+    }, [transactions]);
 
     const handleAddTransaction = () => {
         const { description, amount } = newTransaction;
@@ -74,9 +74,9 @@ const Dashboard: React.FC = () => {
         <div style={{ maxWidth: 800, margin: '0 auto', padding: 24 }}>
             <h1 className='text-xl'>Dashboard</h1>
             <div style={{ display: 'flex', gap: 24, marginBottom: 32 }}>
-                <SummaryCard label="Balance" value={`$${mockData.balance}`} />
-                <SummaryCard label="Income" value={`$${mockData.income}`} />
-                <SummaryCard label="Expenses" value={`$${mockData.expenses}`} />
+                <SummaryCard label="Balance" value={`$${balance}`} />
+                <SummaryCard label="Income" value={`$${income}`} />
+                <SummaryCard label="Expenses" value={`$${expenses}`} />
             </div>
             <h2 className='text-xl'>Recent Transactions</h2>
             <button

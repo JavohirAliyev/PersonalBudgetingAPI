@@ -2,6 +2,7 @@ using PersonalBudgetingApi.Models;
 using PersonalBudgetingApi.Database;
 using PersonalBudgetingApi.DTO;
 using Microsoft.EntityFrameworkCore;
+using PersonalBudgetingApi.Services.Interfaces;
 
 namespace PersonalBudgetingApi.Services
 {
@@ -9,9 +10,10 @@ namespace PersonalBudgetingApi.Services
     {
         private readonly PersonalBudgetingDbContext _context = context;
 
-        public Task<IEnumerable<Transaction>> GetAllAsync()
+        public async Task<IEnumerable<Transaction>> GetAllAsync()
         {
-            return Task.FromResult(_context.Transactions.AsEnumerable());
+            return await _context.Transactions
+                .ToListAsync();
         }
 
         public Task<Transaction?> GetByIdAsync(int id)
@@ -31,10 +33,10 @@ namespace PersonalBudgetingApi.Services
                 UserId = dto.UserId
             };
 
-            await _context.Transactions.AddAsync(transaction);
+            var created = await _context.Transactions.AddAsync(transaction);
             await _context.SaveChangesAsync();
 
-            return transaction;
+            return created.Entity;
         }
 
         public async Task<bool> UpdateAsync(int id, TransactionDto dto)

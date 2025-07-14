@@ -1,5 +1,5 @@
 using PersonalBudgetingApi.Models;
-using PersonalBudgetingApi.Interfaces;
+using PersonalBudgetingApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using PersonalBudgetingApi.Database;
 using PersonalBudgetingApi.DTO;
@@ -10,7 +10,7 @@ public class BudgetService(PersonalBudgetingDbContext context) : IBudgetService
 {
     private readonly PersonalBudgetingDbContext _context = context;
 
-    public async Task<BudgetDto?> CreateBudgetAsync(BudgetCreateDto dto, int userId)
+    public async Task<BudgetDto?> CreateBudgetAsync(BudgetDto dto, int userId)
     {
         var budget = new Budget
         {
@@ -56,7 +56,7 @@ public class BudgetService(PersonalBudgetingDbContext context) : IBudgetService
             .FirstOrDefaultAsync();
     }
 
-    public async Task<bool> UpdateBudgetAsync(int id, BudgetUpdateDto dto, int userId)
+    public async Task<bool> UpdateBudgetAsync(int id, BudgetDto dto, int userId)
     {
         var budget = await _context.Budgets.FirstOrDefaultAsync(b => b.Id == id && b.UserId == userId);
         if (budget == null) return false;

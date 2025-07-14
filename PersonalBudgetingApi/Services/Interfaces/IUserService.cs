@@ -1,6 +1,6 @@
 using PersonalBudgetingApi.Models;
 
-namespace PersonalBudgetingApi.Interfaces;
+namespace PersonalBudgetingApi.Services.Interfaces;
 
 public interface IUserService
 {
