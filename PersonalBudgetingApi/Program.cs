@@ -6,6 +6,7 @@ using PersonalBudgetingApi.Services;
 using PersonalBudgetingApi.Services.Interfaces;
 using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
+using PersonalBudgetingApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -87,8 +88,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseRouting();
 app.UseHttpsRedirection();
+
+app.UseExceptionHandling();
+
+app.UseRouting();
 app.UseCors("AllowLocalhost3000");
 app.UseAuthentication();
 app.UseAuthorization();
