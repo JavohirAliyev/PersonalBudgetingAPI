@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PersonalBudgetingApi.Migrations
 {
     /// <inheritdoc />
-    public partial class MigrationsReset : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -65,8 +65,7 @@ namespace PersonalBudgetingApi.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Type = table.Column<string>(type: "TEXT", nullable: true),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    TransactionId = table.Column<int>(type: "INTEGER", nullable: false)
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -88,7 +87,6 @@ namespace PersonalBudgetingApi.Migrations
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Date = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
-                    BudgetId = table.Column<int>(type: "INTEGER", nullable: false),
                     CategoryId = table.Column<int>(type: "INTEGER", nullable: false),
                     UserId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -96,61 +94,33 @@ namespace PersonalBudgetingApi.Migrations
                 {
                     table.PrimaryKey("PK_Transactions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Transactions_Budgets_BudgetId",
-                        column: x => x.BudgetId,
-                        principalTable: "Budgets",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Transactions_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Transactions_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Budgets_Name",
+                name: "IX_Budgets_UserId_Name",
                 table: "Budgets",
-                column: "Name",
+                columns: new[] { "UserId", "Name" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Budgets_UserId",
-                table: "Budgets",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Categories_Name",
+                name: "IX_Categories_UserId_Name",
                 table: "Categories",
-                column: "Name",
+                columns: new[] { "UserId", "Name" },
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Categories_UserId",
-                table: "Categories",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_BudgetId",
-                table: "Transactions",
-                column: "BudgetId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_CategoryId",
                 table: "Transactions",
                 column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_Date",
-                table: "Transactions",
-                column: "Date");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_UserId",
@@ -168,10 +138,10 @@ namespace PersonalBudgetingApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Transactions");
+                name: "Budgets");
 
             migrationBuilder.DropTable(
-                name: "Budgets");
+                name: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "Categories");

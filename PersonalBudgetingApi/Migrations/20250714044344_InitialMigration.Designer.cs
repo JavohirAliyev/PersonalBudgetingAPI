@@ -11,8 +11,8 @@ using PersonalBudgetingApi.Database;
 namespace PersonalBudgetingApi.Migrations
 {
     [DbContext(typeof(PersonalBudgetingDbContext))]
-    [Migration("20250713192910_Relationships Changed")]
-    partial class RelationshipsChanged
+    [Migration("20250714044344_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -79,9 +79,6 @@ namespace PersonalBudgetingApi.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("BudgetId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("INTEGER");
 
@@ -96,8 +93,6 @@ namespace PersonalBudgetingApi.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BudgetId");
 
                     b.HasIndex("CategoryId");
 
@@ -192,12 +187,6 @@ namespace PersonalBudgetingApi.Migrations
 
             modelBuilder.Entity("PersonalBudgetingApi.Models.Transaction", b =>
                 {
-                    b.HasOne("PersonalBudgetingApi.Models.Budget", "Budget")
-                        .WithMany("Transactions")
-                        .HasForeignKey("BudgetId")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
-                        .IsRequired();
-
                     b.HasOne("PersonalBudgetingApi.Models.Category", "Category")
                         .WithMany("Transactions")
                         .HasForeignKey("CategoryId")
@@ -210,16 +199,9 @@ namespace PersonalBudgetingApi.Migrations
                         .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
-                    b.Navigation("Budget");
-
                     b.Navigation("Category");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("PersonalBudgetingApi.Models.Budget", b =>
-                {
-                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("PersonalBudgetingApi.Models.Category", b =>

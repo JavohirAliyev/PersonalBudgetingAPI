@@ -37,14 +37,11 @@ public class CategoriesController(ICategoryService categoryService) : Controller
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCategory(int id, CategoryDto dto)
     {
-        if (id != dto.Id)
-            return BadRequest("Route ID and DTO ID do not match.");
-
-        var updated = await _categoryService.UpdateAsync(dto);
+        var updated = await _categoryService.UpdateAsync(id, dto);
         if (!updated)
             return NotFound($"Category with ID {id} was not found and could not be updated.");
 
-        return NoContent();
+        return Ok(updated);
     }
 
     [HttpDelete("{id}")]
