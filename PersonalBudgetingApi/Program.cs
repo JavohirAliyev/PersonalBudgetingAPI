@@ -23,7 +23,7 @@ builder.Services.AddScoped<ICategoryService, CategoriesService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IBudgetService, BudgetService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddSingleton(new TokenService(jwtKey));
+builder.Services.AddScoped(sp => new TokenService(jwtKey));
 
 builder.Services.AddCors(options =>
 {

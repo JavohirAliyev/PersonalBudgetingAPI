@@ -39,26 +39,25 @@ namespace PersonalBudgetingApi.Services
             return created.Entity;
         }
 
-        public async Task<bool> UpdateAsync(int id, TransactionDto dto)
+        public async Task<Transaction?> UpdateAsync(int id, TransactionDto dto)
         {
             var transaction = await _context.Transactions
                 .Include(t => t.Category)
-                .FirstOrDefaultAsync(t => t.Id == id);
+                .FirstOrDefaultAsync(t => t.Id == id)
+                ?? throw new KeyNotFoundException($"Transaction with ID {id} was not found.");
 
-            if (transaction == null)
-                return false;
+            var category = await _context.Categories.FindAsync(dto.CategoryId)
+                ?? throw new ArgumentException($"Category with ID {dto.CategoryId} does not exist.");
 
             transaction.Amount = dto.Amount;
             transaction.Description = dto.Description;
             transaction.Date = dto.Date;
-
-            var category = await _context.Categories.FindAsync(dto.CategoryId);
-            if (category == null)
-                return false;
-
             transaction.Category = category;
 
-            return true;
+            var updated = _context.Transactions.Update(transaction);
+            await _context.SaveChangesAsync();
+
+            return updated.Entity;
         }
 
         public Task<bool> DeleteAsync(int id)

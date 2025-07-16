@@ -40,11 +40,7 @@ public class TransactionsController(ITransactionService transactionService) : Co
     public async Task<IActionResult> UpdateTransaction(int id, TransactionDto dto)
     {
         var updated = await _transactionService.UpdateAsync(id, dto);
-
-        if (!updated)
-            return NotFound($"Transaction with ID {id} was not found.");
-
-        return NoContent();
+        return Ok(updated);
     }
 
     [HttpDelete("{id}")]
