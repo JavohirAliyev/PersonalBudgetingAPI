@@ -16,12 +16,34 @@ namespace PersonalBudgetingApi.Middleware
             catch (Exception ex)
             {
                 context.Response.ContentType = "application/json";
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                var statusCode = (int)HttpStatusCode.InternalServerError;
+                var message = "An unexpected error occurred.";
+
+                if (ex is ArgumentException)
+                {
+                    statusCode = (int)HttpStatusCode.BadRequest;
+                    message = "Invalid argument provided.";
+                }
+                if (ex is UnauthorizedAccessException)
+                {
+                    statusCode = (int)HttpStatusCode.Unauthorized;
+                    message = "Access denied.";
+                }
+                if (ex is KeyNotFoundException)
+                {
+                    statusCode = (int)HttpStatusCode.NotFound;
+                    message = "Resource not found.";
+                }
+                if (ex is InvalidOperationException)
+                {
+                    statusCode = (int)HttpStatusCode.Conflict;
+                    message = "Operation cannot be performed in the current state.";
+                }
 
                 var response = new
                 {
-                    statusCode = context.Response.StatusCode,
-                    message = "An unexpected error occurred.",
+                    statusCode,
+                    message,
                     detail = ex.Message
                 };
 

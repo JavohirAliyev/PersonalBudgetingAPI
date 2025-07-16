@@ -8,7 +8,7 @@ namespace PersonalBudgetingApi.Services.Interfaces
         Task<IEnumerable<Transaction>> GetAllAsync();
         Task<Transaction?> GetByIdAsync(int id);
         Task<Transaction> CreateAsync(TransactionDto dto);
-        Task<bool> UpdateAsync(int id, TransactionDto dto);
+        Task<Transaction?> UpdateAsync(int id, TransactionDto dto);
         Task<bool> DeleteAsync(int id);
     }
 }

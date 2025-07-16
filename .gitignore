@@ -95,3 +95,5 @@ coverage/
 # Storybook
 .storybook-out/
 PersonalBudgetingApi/personalbudgeting.db
+PersonalBudgetingApi/personalbudgeting.db-shm
+PersonalBudgetingApi/personalbudgeting.db-wal

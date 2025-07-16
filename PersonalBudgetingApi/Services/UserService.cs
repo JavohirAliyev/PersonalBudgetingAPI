@@ -24,7 +24,7 @@ public class UserService(PersonalBudgetingDbContext context) : IUserService
     {
         if (await EmailExistsAsync(email))
         {
-            throw new Exception("Ushbu email allaqachon ro'yxatdan o'tgan.");
+            throw new InvalidOperationException("Ushbu email allaqachon ro'yxatdan o'tgan.");
         }
 
         var salt = PasswordHasher.GenerateSalt();
