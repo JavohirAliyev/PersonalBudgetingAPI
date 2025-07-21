@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace PersonalBudgetingApi.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class DataSeed : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -103,6 +105,48 @@ namespace PersonalBudgetingApi.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "CreatedAt", "Currency", "DateOfBirth", "Email", "FirstName", "IsActive", "IsEmailConfirmed", "LastName", "PasswordHash", "PasswordSalt", "PreferredLanguage", "Role", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "johndoe@gmail.com", "John", false, false, "Doe", "hashedpassword1", "salt1", null, "user", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(1992, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "janesmith@gmail.com", "Jane", false, false, "Smith", "hashedpassword2", "salt2", null, "user", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Budgets",
+                columns: new[] { "Id", "Limit", "Name", "UserId" },
+                values: new object[,]
+                {
+                    { 1, 1500.00m, "Monthly Budget", 1 },
+                    { 2, 5000.00m, "Annual Savings", 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "Name", "Type", "UserId" },
+                values: new object[,]
+                {
+                    { 1, "Groceries", "Expense", 1 },
+                    { 2, "Utilities", "Expense", 1 },
+                    { 3, "Salary", "Income", 1 },
+                    { 4, "Entertainment", "Expense", 2 },
+                    { 5, "Investments", "Income", 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Transactions",
+                columns: new[] { "Id", "Amount", "CategoryId", "Date", "Description", "UserId" },
+                values: new object[,]
+                {
+                    { 1, 50.00m, 1, new DateTime(2023, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Grocery shopping", 1 },
+                    { 2, 100.00m, 2, new DateTime(2023, 10, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "Electricity bill", 1 },
+                    { 3, 2000.00m, 3, new DateTime(2023, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "Monthly salary", 1 },
+                    { 4, 30.00m, 4, new DateTime(2023, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Movie night", 2 },
+                    { 5, 500.00m, 5, new DateTime(2023, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Stock investment", 2 }
                 });
 
             migrationBuilder.CreateIndex(

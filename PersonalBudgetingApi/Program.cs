@@ -25,6 +25,8 @@ builder.Services.AddScoped<IBudgetService, BudgetService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped(sp => new TokenService(jwtKey));
 
+builder.Services.AddHostedService<SubscriptionCronJobService>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost3000", policy =>
