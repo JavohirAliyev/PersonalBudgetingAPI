@@ -11,8 +11,8 @@ using PersonalBudgetingApi.Database;
 namespace PersonalBudgetingApi.Migrations
 {
     [DbContext(typeof(PersonalBudgetingDbContext))]
-    [Migration("20250714044344_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20250721042638_DataSeed")]
+    partial class DataSeed
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,6 +43,22 @@ namespace PersonalBudgetingApi.Migrations
                         .IsUnique();
 
                     b.ToTable("Budgets");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Limit = 1500.00m,
+                            Name = "Monthly Budget",
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Limit = 5000.00m,
+                            Name = "Annual Savings",
+                            UserId = 2
+                        });
                 });
 
             modelBuilder.Entity("PersonalBudgetingApi.Models.Category", b =>
@@ -68,6 +84,43 @@ namespace PersonalBudgetingApi.Migrations
                         .IsUnique();
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Groceries",
+                            Type = "Expense",
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Utilities",
+                            Type = "Expense",
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Salary",
+                            Type = "Income",
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Entertainment",
+                            Type = "Expense",
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Investments",
+                            Type = "Income",
+                            UserId = 2
+                        });
                 });
 
             modelBuilder.Entity("PersonalBudgetingApi.Models.Transaction", b =>
@@ -99,6 +152,53 @@ namespace PersonalBudgetingApi.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Transactions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Amount = 50.00m,
+                            CategoryId = 1,
+                            Date = new DateTime(2023, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Grocery shopping",
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Amount = 100.00m,
+                            CategoryId = 2,
+                            Date = new DateTime(2023, 10, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Electricity bill",
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Amount = 2000.00m,
+                            CategoryId = 3,
+                            Date = new DateTime(2023, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Monthly salary",
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Amount = 30.00m,
+                            CategoryId = 4,
+                            Date = new DateTime(2023, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Movie night",
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Amount = 500.00m,
+                            CategoryId = 5,
+                            Date = new DateTime(2023, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Stock investment",
+                            UserId = 2
+                        });
                 });
 
             modelBuilder.Entity("PersonalBudgetingApi.Models.User", b =>
@@ -161,6 +261,38 @@ namespace PersonalBudgetingApi.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateOfBirth = new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "johndoe@gmail.com",
+                            FirstName = "John",
+                            IsActive = false,
+                            IsEmailConfirmed = false,
+                            LastName = "Doe",
+                            PasswordHash = "hashedpassword1",
+                            PasswordSalt = "salt1",
+                            Role = "user",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateOfBirth = new DateTime(1992, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "janesmith@gmail.com",
+                            FirstName = "Jane",
+                            IsActive = false,
+                            IsEmailConfirmed = false,
+                            LastName = "Smith",
+                            PasswordHash = "hashedpassword2",
+                            PasswordSalt = "salt2",
+                            Role = "user",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("PersonalBudgetingApi.Models.Budget", b =>

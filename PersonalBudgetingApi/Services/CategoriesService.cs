@@ -9,9 +9,11 @@ public class CategoriesService(PersonalBudgetingDbContext context) : ICategorySe
 {
     private readonly PersonalBudgetingDbContext _context = context;
 
-    public Task<IEnumerable<Category>> GetAllAsync()
+    public async Task<List<Category>> GetAllAsync()
     {
-        return Task.FromResult(_context.Categories.AsEnumerable());
+        var categories = _context.Categories
+            .ToList();
+        return await Task.FromResult(categories);
     }
 
     public async Task<Category?> GetByIdAsync(int id)
