@@ -3,6 +3,7 @@ using PersonalBudgetingApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using PersonalBudgetingApi.Database;
 using PersonalBudgetingApi.DTO;
+using PersonalBudgetingApi.Exceptions;
 
 namespace PersonalBudgetingApi.Services;
 
@@ -25,9 +26,11 @@ public class BudgetService(PersonalBudgetingDbContext context) : IBudgetService
         return created.Entity;
     }
 
-    public async Task<List<BudgetDto>> GetBudgetsAsync(int userId)
+    public async Task<List<BudgetDto>> GetBudgetsAsync(int userId, int pageSize, int pageNumber)
     {
         return await _context.Budgets
+            .Skip(pageSize * (pageNumber - 1))
+            .Take(pageSize)
             .Where(b => b.UserId == userId)
             .Select(b => b.ToDto())
             .ToListAsync();
@@ -47,9 +50,8 @@ public class BudgetService(PersonalBudgetingDbContext context) : IBudgetService
 
     public async Task<bool> UpdateBudgetAsync(int id, BudgetDto dto, int userId)
     {
-        var budget = await _context.Budgets.FirstOrDefaultAsync(b => b.Id == id && b.UserId == userId);
-        if (budget == null) return false;
-
+        var budget = await _context.Budgets.FirstOrDefaultAsync(b => b.Id == id && b.UserId == userId)
+            ?? throw new NotFoundException($"Could not find budget with id {id}");
         budget.Name = dto.Name;
         budget.Limit = dto.Limit;
 

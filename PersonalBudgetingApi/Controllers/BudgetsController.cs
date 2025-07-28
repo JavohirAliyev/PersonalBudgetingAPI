@@ -29,9 +29,9 @@ public class BudgetsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromRoute] int pageSize, int pageNumber)
     {
-        var budgets = await _budgetService.GetBudgetsAsync(GetUserId());
+        var budgets = await _budgetService.GetBudgetsAsync(GetUserId(), pageSize, pageNumber);
         return Ok(budgets);
     }
 

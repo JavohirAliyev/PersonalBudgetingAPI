@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using PersonalBudgetingApi.Exceptions;
 
 namespace PersonalBudgetingApi.Middleware
 {
@@ -18,33 +19,27 @@ namespace PersonalBudgetingApi.Middleware
                 context.Response.ContentType = "application/json";
                 var statusCode = (int)HttpStatusCode.InternalServerError;
                 var message = "An unexpected error occurred.";
+                string errorCode = ErrorCode.InternalError.ToString();
 
                 if (ex is ArgumentException)
                 {
                     statusCode = (int)HttpStatusCode.BadRequest;
                     message = "Invalid argument provided.";
+                    errorCode = ErrorCode.BadRequest.ToString();
                 }
-                if (ex is UnauthorizedAccessException)
+                if (ex is ApiException apiEx)
                 {
-                    statusCode = (int)HttpStatusCode.Unauthorized;
-                    message = "Access denied.";
-                }
-                if (ex is KeyNotFoundException)
-                {
-                    statusCode = (int)HttpStatusCode.NotFound;
-                    message = "Resource not found.";
-                }
-                if (ex is InvalidOperationException)
-                {
-                    statusCode = (int)HttpStatusCode.Conflict;
-                    message = "Operation cannot be performed in the current state.";
+                    statusCode = apiEx.StatusCode;
+                    message = apiEx.Message;
+                    errorCode = apiEx.Code.ToString();
                 }
 
                 var response = new
                 {
                     statusCode,
                     message,
-                    detail = ex.Message
+                    detail = ex.Message,
+                    ErrorCode = errorCode,
                 };
 
                 var json = JsonSerializer.Serialize(response);
