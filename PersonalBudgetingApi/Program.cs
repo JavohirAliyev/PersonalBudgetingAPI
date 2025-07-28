@@ -7,6 +7,7 @@ using PersonalBudgetingApi.Services.Interfaces;
 using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
 using PersonalBudgetingApi.Middleware;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,7 +50,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("UserAndHigher", p =>
+        p.RequireRole("User", "Admin", "SuperAdmin"));
+    options.AddPolicy("AdminAndHigher", p =>
+        p.RequireRole("Admin", "SuperAdmin"));
+});
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
