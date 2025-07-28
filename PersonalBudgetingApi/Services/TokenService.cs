@@ -22,7 +22,8 @@ public class TokenService(string jwtKey)
             new(ClaimTypes.GivenName, user.FirstName),
             new(ClaimTypes.Role, user.Role),
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new(JwtRegisteredClaimNames.FamilyName, user.LastName)
+            new(JwtRegisteredClaimNames.FamilyName, user.LastName),
+            new(ClaimTypes.Role, "Admin")
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor

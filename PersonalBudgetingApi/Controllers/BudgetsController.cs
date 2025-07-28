@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[Authorize(Policy = "AdminAndHigher")]
 public class BudgetsController : ControllerBase
 {
     private readonly IBudgetService _budgetService;

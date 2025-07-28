@@ -1,3 +1,5 @@
+using PersonalBudgetingApi.DTO;
+
 namespace PersonalBudgetingApi.Models;
 
 public class Budget
@@ -8,4 +10,13 @@ public class Budget
 
     public int UserId { get; set; }
     public User? User { get; set; }
+
+    public BudgetDto ToDto()
+    {
+        return new BudgetDto
+        {
+            Name = Name ?? string.Empty,
+            Limit = Limit
+        };
+    }
 }

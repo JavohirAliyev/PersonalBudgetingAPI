@@ -29,11 +29,7 @@ public class BudgetService(PersonalBudgetingDbContext context) : IBudgetService
     {
         return await _context.Budgets
             .Where(b => b.UserId == userId)
-            .Select(b => new BudgetDto
-            {
-                Name = b.Name!,
-                Limit = b.Limit
-            })
+            .Select(b => b.ToDto())
             .ToListAsync();
     }
 
